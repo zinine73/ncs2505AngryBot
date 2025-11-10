@@ -683,8 +683,8 @@ GameObject:
   - component: {fileID: 4751160608269945629}
   - component: {fileID: 4751160609144080189}
   - component: {fileID: 8515417059282849620}
-  - component: {fileID: 4187939722483922294}
   - component: {fileID: 4318723267045238376}
+  - component: {fileID: 2592011122621232975}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -764,6 +764,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 10
+  damping: 10
 --- !u!114 &8515417059282849620
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -779,31 +780,15 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  Synchronization: 3
+  Synchronization: 0
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 4187939722483922294}
+  - {fileID: 4751160609144080189}
   - {fileID: 4318723267045238376}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &4187939722483922294
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 439261255027955524}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
-  m_UseLocal: 1
 --- !u!114 &4318723267045238376
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -837,6 +822,20 @@ MonoBehaviour:
   m_SynchronizeLayers:
   - SynchronizeType: 1
     LayerIndex: 0
+--- !u!114 &2592011122621232975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 439261255027955524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b9018cec76570b4a9c2c4ee160f7dec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firePos: {fileID: 4751160608305622055}
+  bulletPrefab: {fileID: 8222332823237018225, guid: bbfb9a20b68ab4c3f830a9872b675b34, type: 3}
 --- !u!1 &439261255027955528
 GameObject:
   m_ObjectHideFlags: 0

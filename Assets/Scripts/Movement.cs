@@ -4,7 +4,7 @@ using Cinemachine;
 using Photon.Pun;
 using UnityEngine;
 
-public class Movement : MonoBehaviour
+public class Movement : MonoBehaviourPunCallbacks, IPunObservable
 {
     // 컴포넌트 캐시 처리를 위한 변수
     CharacterController controller;
@@ -19,6 +19,9 @@ public class Movement : MonoBehaviour
     CinemachineVirtualCamera virtualCamera;
     // 이동 속도
     public float moveSpeed = 10.0f;
+    Vector3 receivePos;
+    Quaternion receiveRot;
+    public float damping = 10.0f;
     void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -44,6 +47,20 @@ public class Movement : MonoBehaviour
             Move();
             Turn();
         }
+        else
+        {
+            // 수신된 좌표, 회전값로 보간한 이동, 회전 처리
+            transform.position = Vector3.Lerp(
+                transform.position,
+                receivePos,
+                Time.deltaTime * damping
+            );
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                receiveRot,
+                Time.deltaTime * damping
+            );
+        }
     }
 
     // 키보드 입력값 연결
@@ -68,7 +85,7 @@ public class Movement : MonoBehaviour
         animator.SetFloat("Forward", forward);
         animator.SetFloat("Strafe", strafe);
     }
-    
+
     // 회전 처리하는 함수
     void Turn()
     {
@@ -84,5 +101,20 @@ public class Movement : MonoBehaviour
         lookDir.y = 0;
         // 주인공 캐릭터의 회전값 지정
         transform.localRotation = Quaternion.LookRotation(lookDir);
+    }
+    
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        // 자신의 로컬 캐릭터인 경우 자신의 데디터를 다른 네트워크 유저에게 송신
+        if (stream.IsWriting)
+        {
+            stream.SendNext(transform.position);
+            stream.SendNext(transform.rotation);
+        }
+        else
+        {
+            receivePos = (Vector3)stream.ReceiveNext();
+            receiveRot = (Quaternion)stream.ReceiveNext();
+        }
     }
 }
