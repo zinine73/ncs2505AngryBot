@@ -113,6 +113,14 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             PhotonNetwork.LoadLevel("BattleField");
         }
     }
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        foreach (var room in roomList)
+        {
+            Debug.Log($"Room={room.Name} ({room.PlayerCount}/{room.MaxPlayers})");
+        }
+    }
+
     #region UI_BUTTON_EVENT 
     public void OnLoginClick()
     {
