@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
+using Unity.VisualScripting;
 
 public class PhotonManager : MonoBehaviourPunCallbacks
 {
@@ -13,6 +14,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     string userId = "Zinine";
     public TMP_InputField userIF;
     public TMP_InputField roomNameIF;
+    Dictionary<string, GameObject> rooms = new Dictionary<string, GameObject>();
+    GameObject roomItemPrefab;
+    public Transform scrollContent;
     void Awake()
     {
         // 마스터 클라이언트의 씬 자동 동기화 옵션
@@ -23,8 +27,12 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         //PhotonNetwork.NickName = userId;
         // 포톤 서버와의 데이터 초당 전송 횟수
         Debug.Log(PhotonNetwork.SendRate);
+        roomItemPrefab = Resources.Load<GameObject>("RoomItem");
         // 포톤 서버 접속
-        PhotonNetwork.ConnectUsingSettings();
+        if (PhotonNetwork.IsConnected == false)
+        {
+            PhotonNetwork.ConnectUsingSettings();
+        }
     }
     void Start()
     {
@@ -115,9 +123,30 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     }
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
-        foreach (var room in roomList)
+        GameObject tempRoom = null;
+        foreach (var roomInfo in roomList)
         {
-            Debug.Log($"Room={room.Name} ({room.PlayerCount}/{room.MaxPlayers})");
+            if (roomInfo.RemovedFromList == true)
+            {
+                rooms.TryGetValue(roomInfo.Name, out tempRoom);
+                Destroy(tempRoom);
+                rooms.Remove(roomInfo.Name);
+            }
+            else
+            {
+                if (rooms.ContainsKey(roomInfo.Name) == false)
+                {
+                    GameObject roomPrefab = Instantiate(roomItemPrefab, scrollContent);
+                    roomPrefab.GetComponent<RoomData>().RoomInfo = roomInfo;
+                    rooms.Add(roomInfo.Name, roomPrefab);
+                }
+                else
+                {
+                    rooms.TryGetValue(roomInfo.Name, out tempRoom);
+                    tempRoom.GetComponent<RoomData>().RoomInfo = roomInfo;
+                }
+            }
+            Debug.Log($"Room={roomInfo.Name} ({roomInfo.PlayerCount}/{roomInfo.MaxPlayers})");
         }
     }
 
