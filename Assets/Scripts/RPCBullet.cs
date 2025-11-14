@@ -5,6 +5,7 @@ using UnityEngine;
 public class RPCBullet : MonoBehaviour
 {
     public GameObject effect;
+    public int actorNumber;
     void Start()
     {
         GetComponent<Rigidbody>().AddRelativeForce(
